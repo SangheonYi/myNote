@@ -31,8 +31,8 @@ int is_inside(float x, float y, t_shape sh) {
     if (x < sh.start_x || x > sh.start_x + sh.width ||
         y < sh.start_y || y > sh.start_y + sh.height)
         return (0);
-    if (x - sh.start_x < 1.0000000 || (sh.start_x + sh.width) - x < 1.0000000 ||
-        y - sh.start_y < 1.0000000 || (sh.start_y + sh.height) - y < 1.0000000)
+    if (x - sh.start_x < 1. || (sh.start_x + sh.width) - x < 1. ||
+        y - sh.start_y < 1. || (sh.start_y + sh.height) - y < 1.)
         return (2);
     return(1);
 }

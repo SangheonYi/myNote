@@ -1,162 +1,97 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
+#include "mini_paint.h"
 
-typedef struct	s_zone
+int     ft_strlen(char *str)
 {
-	int		width;
-	int		height;
-	char	background;
-}				t_zone;
+    int     i;
 
-typedef struct	s_shape
-{
-	char	type;
-	float	x;
-	float	y;
-	float	radius;
-	char	color;
-}				t_shape;
-
-int
-	ft_strlen(char const *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+    i = 0;
+    while (str[i])
+        i++;
+    return (i);
 }
 
-char
-	*get_zone(FILE *file, t_zone *zone)
+int     str_error(char *str)
 {
-	int		i;
-	char	*tmp;
-
-	if (fscanf(file, "%d %d %c\n", &zone->width, &zone->height, &zone->background) != 3)
-		return (NULL);
-	if (zone->width <= 0 || zone->width > 300 || zone->height <= 0 || zone->height > 300)
-		return (NULL);
-	if (!(tmp = (char*)malloc(sizeof(*tmp) * (zone->width * zone->height))))
-		return (NULL);
-	i = 0;
-	while (i < zone->width * zone->height)
-		tmp[i++] = zone->background;
-	return (tmp);
+    write(1, str, ft_strlen(str));
+    return (1);
 }
 
-int
-	in_circle(float x, float y, t_shape *shape)
-{
-	float	distance;
+void write_img(t_bg bg, char *image) {
+    int i = 0;
 
-	distance = sqrtf(powf(x - shape->x, 2.) + powf(y - shape->y, 2.));
-	if (distance <= shape->radius)
-	{
-		if ((shape->radius - distance) < 1.00000000)
-			return (2);
+    while (i < bg.b_height)
+    {
+        write(1, image + i * bg.b_width, bg.b_width);
+        write(1, "\n", 1);
+        i++;
+    }
+}
+
+void fill_shape(t_bg bg, t_shape sh, char* image) {
+    int y = 0;
+    int x = 0;
+    int type = 0;
+
+    while (y < bg.b_height)
+    {
+        x = 0;
+        while (x < bg.b_width)
+        {
+            sh.distance = sqrtf(powf(x - sh.center_x, 2.) + powf(y - sh.center_y, 2.));
+            if (sh.distance <= sh.r)
+            {
+                if ((type == 'c' && sh.r - sh.distance < 1.)
+                || type == 'C')
+                    image[y * bg.b_width + x] = sh.c_char;
+            }
+            x++;
+        }
+        y++;
+    }
+}
+
+int read_n_fill(FILE *file, char *image, t_bg bg)
+{
+    int     read;
+    t_shape sh;
+
+    while ((read = fscanf(file, "%c %f %f %f %c\n",
+     &sh.type, &sh.center_x, &sh.center_y, &sh.r, &sh.c_char))
+     && read == 5)
+    {
+        if (!(sh.r > 0) || !(sh.type == 'c' || sh.type == 'C'))
+            return (1);
+        fill_shape(bg, sh, image);
+    }
+    if (read != -1)
 		return (1);
-	}
-	return (0);
+    return (0);
 }
 
-void
-	draw_shape(t_zone *zone, char *drawing, t_shape *shape)
+int     main(int argc, char *argv[])
 {
-	int	y;
-	int	x;
-	int	is_it;
+    FILE    *file;
+    char    *image;
+    t_bg    bg;
 
-	y = 0;
-	while (y < zone->height)
-	{
-		x = 0;
-		while (x < zone->width)
-		{
-		is_it = in_circle((float)x, (float)y, shape);
-			if ((shape->type == 'c' && is_it == 2)
-				|| (shape->type == 'C' && is_it))
-				drawing[(y * zone->width) + x] = shape->color;
-			x++;
-		}
-		y++;
-	}
+    if (argc != 2)
+        return (str_error("Error: argument\n"));
+    if (!(file = fopen(argv[1], "r")))
+        return (str_error("Error: Operation file corrupted\n"));
+    if (fscanf(file, "%d %d %c\n", &bg.b_width, &bg.b_height, &bg.b_char) != 3)
+        return (str_error("Error: Operation file corrupted\n"));
+    if (!(bg.b_width > 0 && bg.b_width <= 300 && bg.b_height > 0 && bg.b_height <= 300))
+        return (str_error("Error: Operation file corrupted\n"));
+    image = (char*)malloc(sizeof(char) * (bg.b_width * bg.b_height));
+    memset(image, bg.b_char, bg.b_width * bg.b_height);
+    if (read_n_fill(file, image, bg))
+    {
+		free(image);
+        return (str_error("Error: Operation file corrupted\n"));
+    }
+    write_img(bg, image);
+    free(image);
+    fclose(file);
+    return (0);
 }
 
-int
-	draw_shapes(FILE *file, t_zone *zone, char *drawing)
-{
-	t_shape	tmp;
-	int		ret;
-
-	while ((ret = fscanf(file, "%c %f %f %f %c\n", &tmp.type, &tmp.x, &tmp.y, &tmp.radius, &tmp.color)) == 5)
-	{
-		if (tmp.radius <= 0.00000000 || (tmp.type != 'c' && tmp.type != 'C'))
-			return (0);
-		draw_shape(zone, drawing, &tmp);
-	}
-	if (ret != -1)
-		return (0);
-	return (1);
-}
-
-void
-	draw_drawing(t_zone *zone, char *drawing)
-{
-	int	i;
-
-	i = 0;
-	while (i < zone->height)
-	{
-		write(1, drawing + (i * zone->width), zone->width);
-		write(1, "\n", 1);
-		i++;
-	}
-}
-
-int
-	str_error(char const *str)
-{
-	if (str)
-		write(1, str, ft_strlen(str));
-	return (1);
-}
-
-int
-	clear_all(FILE *file, char *drawing, char const *str)
-{
-	if (file)
-		fclose(file);
-	if (drawing)
-		free(drawing);
-	if (str)
-		str_error(str);
-	return (1);
-}
-
-int
-	main(int argc, char **argv)
-{
-	FILE	*file;
-	t_zone	zone;
-	char	*drawing;
-
-	zone.width = 0;
-	zone.height = 0;
-	zone.background = 0;
-	drawing = NULL;
-	if (argc != 2)
-		return (str_error("Error: argument\n"));
-	if (!(file = fopen(argv[1], "r")))
-		return (str_error("Error: Operation file corrupted\n"));
-	if (!(drawing = get_zone(file, &zone)))
-		return (clear_all(file, NULL, "Error: Operation file corrupted\n"));
-	if (!(draw_shapes(file, &zone, drawing)))
-		return (clear_all(file, drawing, "Error: Operation file corrupted\n"));
-	draw_drawing(&zone, drawing);
-	clear_all(file, drawing, NULL);
-	return (0);
-}
