@@ -1,4 +1,4 @@
-#include "micro_paint.h"
+#include "mini_paint.h"
 
 int     ft_strlen(char *str)
 {
@@ -47,9 +47,18 @@ void fill_shape(t_bg bg, t_shape sh, char* image) {
         x = 0;
         while (x < bg.b_width)
         {
-            type = is_inside(x, y, sh);
-            if ((sh.type == 'r' && type == 2)
-            || (sh.type == 'R' && type))
+            distance = sqrtf(powf(x - center_x, 2.) + powf(y - center_y, 2.));
+                if (distance <= r)
+                {
+                    if (type == 'c')
+                    {
+                        // 테두리인지 확인하기
+                        if (r - distance < 1.0000000)
+                            image[y * bg.b_width + x] = c_char;
+                    }
+                    else if (type == 'C')
+                        image[y * bg.b_width + x] = c_char;
+                }
                 image[y * bg.b_width + x] = sh.c_char;
             x++;
         }
@@ -62,11 +71,10 @@ int read_n_fill(FILE *file, char *image, t_bg bg)
     int     read;
     t_shape sh;
 
-    while ((read = fscanf(file, "%c %f %f %f %f %c\n",
-     &sh.type, &sh.start_x, &sh.start_y, &sh.width, &sh.height, &sh.c_char))
-     && read == 6)
+    while ((read = fscanf(file, "%c %f %f %f %c\n", &type, &center_x, &center_y, &r, &c_char)
+     && read == 5)
     {
-        if (!(sh.width > 0 && sh.height > 0) || !(sh.type == 'R' || sh.type == 'r'))
+        if (!(r > 0) || !(type == 'c' || type == 'C'))
             return (1);
         fill_shape(bg, sh, image);
     }
