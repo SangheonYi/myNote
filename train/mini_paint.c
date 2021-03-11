@@ -17,7 +17,7 @@ int is_inside(float x, float y, t_sh sh) {
 	float dist = sqrtf((x - sh.cen_x) * (x - sh.cen_x)
 	+ (y - sh.cen_y) * (y - sh.cen_y) );
 
-	if (dist <= sh.r) {
+	if (dist < sh.r) {
 		if (sh.r - dist < 1.)
 			return (2);
 		return (1);
@@ -54,6 +54,7 @@ int read_n_fill(char *img, t_bg bg, FILE *file) {
 	}
 	if (read != -1)
 	{
+		printf("??\n");
 		return (1);
 	}
 	return (0);
@@ -77,16 +78,16 @@ int main(int argc, char *argv[]) {
 	if (argc != 2)
 		return (str_error("Error: argument\n"));
 	if (!(file = fopen(argv[1], "r")))
-		return (str_error("Error: Operation file corrupted\n"));
+		return (str_error("Error: Operation file corrupted1\n"));
 	if (fscanf(file, "%d %d %c\n", &bg.w, &bg.h, &bg.c) != 3)
-		return (str_error("Error: Operation file corrupted\n"));
+		return (str_error("Error: Operation file corrupted2\n"));
 	if (!(0 < bg.w && bg.w <= 300 && 0 < bg.h && bg.h <= 300))
-		return (str_error("Error: Operation file corrupted\n"));
+		return (str_error("Error: Operation file corrupted3\n"));
 	img = malloc(sizeof(char) * bg.w * bg.h);
 	memset(img, bg.c, bg.h * bg.w);
 	if (read_n_fill(img, bg, file)) {
 		free(img);
-		return (str_error("Error: Operation file corrupted\n"));
+		return (str_error("Error: Operation file corrupted4\n"));
 	}
 	draw_shape(img, bg);
 	free(img);
