@@ -30,7 +30,6 @@ void write_img(t_bg bg, char *image) {
 void fill_shape(t_bg bg, t_shape sh, char* image) {
     int y = 0;
     int x = 0;
-    int type = 0;
 
     while (y < bg.b_height)
     {
@@ -40,8 +39,8 @@ void fill_shape(t_bg bg, t_shape sh, char* image) {
             sh.distance = sqrtf(powf(x - sh.center_x, 2.) + powf(y - sh.center_y, 2.));
             if (sh.distance <= sh.r)
             {
-                if ((type == 'c' && sh.r - sh.distance < 1.)
-                || type == 'C')
+                if ((sh.type == 'c' && sh.r - sh.distance < 1.)
+                || sh.type == 'C')
                     image[y * bg.b_width + x] = sh.c_char;
             }
             x++;

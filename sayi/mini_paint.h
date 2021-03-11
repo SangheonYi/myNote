@@ -6,6 +6,7 @@
 # include <string.h>
 # include <math.h>
 
+	// 배경
 	typedef struct	s_back_ground
 	{
 		int		b_width;
@@ -13,7 +14,8 @@
 		char	b_char;
 	}				t_bg;
 
-	typedef struct	s_shape
+	// 도형
+		typedef struct	s_shape
 	{
 		char	type;
 		float	center_x;
