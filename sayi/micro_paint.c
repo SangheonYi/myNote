@@ -40,16 +40,16 @@ int is_inside(float x, float y, t_shape sh) {
 void fill_shape(t_bg bg, t_shape sh, char* image) {
     int y = 0;
     int x = 0;
-    int type = 0;
+    int is_in = 0;
 
     while (y < bg.b_height)
     {
         x = 0;
         while (x < bg.b_width)
         {
-            type = is_inside(x, y, sh);
-            if ((sh.type == 'r' && type == 2)
-            || (sh.type == 'R' && type))
+            is_in = is_inside(x, y, sh);
+            if ((sh.type == 'r' && is_in == 2)
+            || (sh.type == 'R' && is_in))
                 image[y * bg.b_width + x] = sh.c_char;
             x++;
         }
