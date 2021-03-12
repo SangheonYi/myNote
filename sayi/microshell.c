@@ -88,6 +88,23 @@ int ft_cd(t_cmd *cmd) {
 	return (res);
 }
 
+int parent(t_cmd *cmd, pid_t pid) {
+	int	status;
+	int res = 0;
+
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		res = WEXITSTATUS(status);
+	if (cmd->is_pipe) {
+		close(cmd->fd[1]);
+		if (!cmd->next)
+			close(cmd->fd[0]);
+	}
+	if (cmd->prev && cmd->prev->is_pipe)
+		close(cmd->prev->fd[0]);
+	return (res);
+}
+
 int ft_nonbuiltin(t_cmd *cmd, char **env) {
 	pid_t pid = 0;
 	int	res = 0;
@@ -103,14 +120,15 @@ int ft_nonbuiltin(t_cmd *cmd, char **env) {
 			exit_fatal();
 		if (cmd->is_pipe && cmd->prev && dup2(cmd->fd[0], 0) < 0)
 			exit_fatal();
-		if (execve(cmd->args[0], cmd->args, env) < 0) {
+		if ((res = execve(cmd->args[0], cmd->args, env)) < 0) {
 			ft_putstr("error: cannot execute ");
 			ft_putstr(cmd->args[0]);
 			ft_putstr("\n");
 		}
+		exit(res);
 	}
 	else
-		parent(cmd, pid);
+		res = parent(cmd, pid);
 	return (res);
 }
 
