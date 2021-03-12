@@ -1,4 +1,39 @@
 # include "microshell.h"
+# include <stdio.h>
+int	ft_strlen(char *str) {
+	int i = 0;
+
+	while (str[i])
+		i++;
+	return (i);
+}
+
+void	ft_putstr(char *s)
+{
+	write(2, s, ft_strlen(s));
+}
+
+void	exit_fatal()
+{
+	ft_putstr("error fatal\n");
+	exit(1);
+}
+
+char	*ft_strdup(char *s)
+{
+	int	i = 0;
+	char *p;
+	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
+		exit_fatal();
+	while (s[i])
+	{
+		p[i] = s[i];
+		i++;
+	}
+	p[i] = 0;
+	return (p);
+}
+
 void clear(t_cmd *cmd) {
 	int i = 0;
 	t_cmd *tmp;
@@ -36,6 +71,7 @@ t_cmd *create_cmd(t_cmd *tmp, char **av, int arg_num, int is_pipe) {
 	new->next = NULL;
 	if (tmp)
 		tmp->next = new;
+printf("3\n");
 	return (new);
 }
 
@@ -44,7 +80,7 @@ void arg_pars(int ac, char **av, t_cmd *cmd) {
 	int	start = 1;
 	int	last = 1;
 	int	is_pipe = 0;
-
+printf("1\n");
 	while (last < ac)
 	{
 		if (!strcmp(av[last], "|") || !strcmp(av[last], ";") || last + 1 == ac)
@@ -61,6 +97,7 @@ void arg_pars(int ac, char **av, t_cmd *cmd) {
 			if (last != start)
 			{
 				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
+printf("2\n");
 				if (!cmd)
 					cmd = tmp;
 			}
@@ -147,10 +184,11 @@ int exec(t_cmd *cmd, char **env) {
 
 int		main(int ac, char **av, char **env)
 {
-	t_cmd *cmd;
+	t_cmd *cmd = 0;
 	int res = 0;
 
-	arg_pars(ac, **av, cmd);
+	arg_pars(ac, av, cmd);
+printf("\n");
 	res = exec(cmd, env);
 	clear(cmd);
 	return (res);

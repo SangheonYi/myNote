@@ -14,9 +14,4 @@ typedef struct	s_cmd
 	struct	s_cmd	*next;
 }				t_cmd;
 
-int		ft_strlen(char *str);
-void	ft_putstr(char *s);
-void	exit_fatal();
-char	*ft_strdup(char *s);
-
 # endif
