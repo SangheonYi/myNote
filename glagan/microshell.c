@@ -156,7 +156,7 @@ int		exec(t_cmd *cmd, char **env)
 	{
 		if (!strcmp(cmd->args[0], "cd"))
 			res = ft_cd(cmd);
-		else
+		else 
 			res = ft_non_builtin(cmd, env);
 		cmd = cmd->next;
 	}
@@ -186,7 +186,7 @@ int		main(int ac, char **av, char **env)
 			}
 			if (last - start != 0)
 			{
-				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
+				tmp = create_cmd(tmp, &av[start], last - start, is_pipe);
 				if (!cmd)
 					cmd = tmp;
 			}
