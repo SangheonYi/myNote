@@ -2,49 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-
-typedef struct		s_cmd
-{
-	char			**args;
-	int				is_pipe;
-	int				fd[2];
-	struct	s_cmd	*prev;
-	struct	s_cmd	*next;
-}					t_cmd;
-
-int		ft_strlen(char *s)
-{
-	int i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-void	ft_putstr(char *s)
-{
-	write(2, s, ft_strlen(s));
-}
-
-void	exit_fatal()
-{
-	ft_putstr("error fatal\n");
-	exit(1);
-}
-
-char	*ft_strdup(char *s)
-{
-	int	i = 0;
-	char *p;
-	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
-		exit_fatal();
-	while (s[i])
-	{
-		p[i] = s[i];
-		i++;
-	}
-	p[i] = 0;
-	return (p);
-}
+#include "microshell.h"
 
 void	clear(t_cmd *cmd)
 {
@@ -186,7 +144,7 @@ int		main(int ac, char **av, char **env)
 			}
 			if (last - start != 0)
 			{
-				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
+				tmp = create_cmd(tmp, &av[start], last - start, is_pipe);
 				if (!cmd)
 					cmd = tmp;
 			}
