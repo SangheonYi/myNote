@@ -1,25 +1,5 @@
-/bin/ls
-microshell
-microshell.c
-microshell.dSYM
-microshell.h
-out.res
-subject.en.txt
-subject.fr.txt
-test.sh
-
-/bin/cat microshell.c
 #include "microshell.h"
 
-#ifdef TEST_SH
-
-# define TEST		1
-
-#else
-
-# define TEST		0
-
-#endif
 int	ft_strlen(char *str)
 {
 	int i = 0;
@@ -212,13 +192,5 @@ int		main(int ac, char *av[], char **env)
 	}
 	res = exec(cmd, env);
 	clear(cmd);
-	while(TEST)
-		;
 	return (res);
 }
-
-/bin/ls microshell.c
-microshell.c
-
-/bin/ls salut
-
