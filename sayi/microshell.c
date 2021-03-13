@@ -1,48 +1,43 @@
 # include "microshell.h"
-# include <stdio.h>
 
-int		ft_strlen(char *str) {
-	int i = 0;
-
-	while (str[i])
+int		ft_strlen(char *s) {
+	int i= 0;
+	while (s[i])
 		i++;
 	return (i);
 }
 
-void	ft_putstr(char *s)
-{
+void	ft_putstr(char *s) {
 	write(2, s, ft_strlen(s));
 }
 
-void	exit_fatal()
-{
-	ft_putstr("error fatal\n");
+int		exit_fatal() {
+	ft_putstr("error: fatal\n");
 	exit(1);
 }
 
-char	*ft_strdup(char *s)
-{
-	int	i = 0;
+char	*ft_strdup(char *str) {
+	int i = 0;
 	char *p;
-	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
+
+	if (!(p = malloc(sizeof(char) * (ft_strlen(str) + 1))))
 		exit_fatal();
-	while (s[i])
-	{
-		p[i] = s[i];
+	while(str[i]) {
+		p[i] = str[i];
 		i++;
 	}
-	p[i] = 0;
+	p[i] = str[i];
 	return (p);
 }
 
 void	clear(t_cmd *cmd) {
-	int i = 0;
 	t_cmd *tmp;
+	int i = 0;
 
-	while (cmd)
-	{
+	while (cmd) {
 		i = 0;
-		while(cmd->args[i]) {
+		while (cmd->args[i])
+		{
 			free(cmd->args[i]);
 			i++;
 		}
@@ -53,42 +48,42 @@ void	clear(t_cmd *cmd) {
 	}
 }
 
-t_cmd	*create_cmd(t_cmd *tmp, char **av, int arg_num, int is_pipe) {
+t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
+{
 	t_cmd *new;
 	int i = 0;
 
 	if (!(new = malloc(sizeof(t_cmd))))
 		exit_fatal();
-	if (!(new->args = malloc(sizeof(char *) * (arg_num + 1))))
+	if (!(new->args = malloc(sizeof(char *) * (argnum + 1))))
 		exit_fatal();
-	while (i < arg_num)
+	while (i < argnum)
 	{
 		new->args[i] = ft_strdup(av[i]);
 		i++;
 	}
 	new->args[i] = NULL;
-	new->is_pipe = is_pipe;
 	new->prev = tmp;
 	new->next = NULL;
+	new->is_pipe = is_pipe;
 	if (tmp)
 		tmp->next = new;
 	return (new);
 }
 
-
-
-int		ft_cd(t_cmd *cmd) {
-		printf("ft_cd\n");
-	int i = 0;
+int		ft_cd(t_cmd *cmd)
+{
 	int res = 0;
-
+	int i = 0;
 	while (cmd->args[i])
 		i++;
-	if (i != 2) {
+	if (i != 2)
+	{
 		ft_putstr("error: cd: bad arguments\n");
-		return (1);
+		return(1);
 	}
-	else if ((res = chdir(cmd->args[1])) < 0) {
+	else if((res = chdir(cmd->args[1])) < 0)
+	{
 		ft_putstr("error: cd: cannot change directory to ");
 		ft_putstr(cmd->args[1]);
 		ft_putstr("\n");
@@ -96,91 +91,88 @@ int		ft_cd(t_cmd *cmd) {
 	return (res);
 }
 
-int		ft_non_builtin(t_cmd *cmd, char **env) {
-		printf("ft_non_builtin\n");
-	pid_t pid = 0;
-	int	res = 0;
-int	status;
-	// int res = 0;
+int		ft_non_builtin(t_cmd *cmd, char **env)
+{
+	pid_t pid;
+	int	status = 0;
+	int res = 0;
 	if (cmd->is_pipe)
-		if (pipe(cmd->fd) < 0)
+		if(pipe(cmd->fd) < 0)
 			exit_fatal();
 	pid = fork();
 	if (pid < 0)
 		exit_fatal();
-	else if(pid == 0) {
-		printf("child\n");
+	else if (pid == 0)
+	{
+		//child
 		if (cmd->is_pipe && dup2(cmd->fd[1], 1) < 0)
 			exit_fatal();
-		if (cmd->prev && cmd->prev->is_pipe && dup2(cmd->fd[0], 0) < 0)
+		if (cmd->prev && cmd->prev->is_pipe && dup2(cmd->prev->fd[0], 0) < 0)
 			exit_fatal();
-		if ((res = execve(cmd->args[0], cmd->args, env)) < 0) {
+		if ((res = execve(cmd->args[0], cmd->args, env)) < 0)
+		{
 			ft_putstr("error: cannot execute ");
 			ft_putstr(cmd->args[0]);
 			ft_putstr("\n");
 		}
-		printf("child exit\n");
 		exit(res);
 	}
-	else
+	else//parent
 	{
-		printf("paren\n");
-
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		res = WEXITSTATUS(status);
-	if (cmd->is_pipe) {
-		close(cmd->fd[1]);
-		if (!cmd->next)
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			res = WEXITSTATUS(status);
+		if (cmd->is_pipe)
+		{
+			close(cmd->fd[1]);
+			if (cmd->next)
+				close(cmd->fd[1]);
+		}
+		if (cmd->prev && cmd->prev->is_pipe)
 			close(cmd->fd[0]);
-	}
-	if (cmd->prev && cmd->prev->is_pipe)
-		close(cmd->prev->fd[0]);
-			// res = parent(cmd, pid);
 	}
 	return (res);
 }
 
-int		exec(t_cmd *cmd, char **env) {
+int		exec(t_cmd *cmd, char **env)
+{
 	int res = 0;
 
-	while(cmd) {
-		if (!strcmp(cmd->args[0], "cd"))
+	while(cmd)
+	{
+		if(!strcmp(cmd->args[0], "cd"))
 			res = ft_cd(cmd);
 		else
 			res = ft_non_builtin(cmd, env);
 		cmd = cmd->next;
-		res++;
-		printf("res\n");
 	}
-	return (res);
+	return(res);
 }
-///////////////////////////////
 
-int		main(int ac, char **av, char **env)
-{
-	t_cmd *tmp;
+int		main(int ac, char *av[], char **env) {
 	t_cmd *cmd;
-	int	start = 1;
-	int	last = 1;
-	int res = 0;
-	int	is_pipe = 0;
-	while (last < ac)
+	t_cmd *tmp;
+	int		start = 1;
+	int		last = 1;
+	int		res = 0;
+	int		is_pipe = 0;
+
+	while(last < ac)
 	{
-		if (!strcmp(av[last], "|") || !strcmp(av[last], ";") || last + 1 == ac)
+		if (!strcmp("|", av[last]) || !strcmp(";", av[last]) || last + 1 == ac)
 		{
-			if (!strcmp(av[last], "|"))
+			if (!strcmp("|", av[last]))
 				is_pipe = 1;
-			else if (!strcmp(av[last], ";"))
+			else if (!strcmp(";", av[last]))
 				is_pipe = 0;
 			else
 			{
 				is_pipe = 0;
 				last++;
 			}
-			if (last - start != 0)
+			if (start != last)
 			{
-				tmp = create_cmd(tmp, &av[start], last - start, is_pipe);
+				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
 				if (!cmd)
 					cmd = tmp;
 			}
@@ -192,5 +184,3 @@ int		main(int ac, char **av, char **env)
 	clear(cmd);
 	return (res);
 }
-
-
