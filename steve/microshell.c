@@ -171,8 +171,11 @@ int		main(int ac, char **av, char **env)
 	int	last = 1;
 	int res = 0;
 	int	is_pipe = 0;
+	// 파싱
 	while (last < ac)
 	{
+		// 인자가 | or ; 이면 실행
+		// last가 index로 | or ;를 찾거나 마지막 인자까지 도달 했을 때 실행
 		if (!strcmp(av[last], "|") || !strcmp(av[last], ";") || last + 1 == ac)
 		{
 			if (!strcmp(av[last], "|"))
@@ -182,12 +185,12 @@ int		main(int ac, char **av, char **env)
 			else
 			{
 				is_pipe = 0;
-				last++;
+				last++;// last == ac가 됨
 			}
-			if (last - start != 0)
+			if (last - start != 0)// 시작 시 last == start 거름
 			{
 				tmp = create_cmd(tmp, &av[start], last - start, is_pipe);
-				if (!cmd)
+				if (!cmd)// 첫 명령 구조체를 cmd에 할당, 이는 처음 한 번 실행 됨
 					cmd = tmp;
 			}
 			start = last + 1;
