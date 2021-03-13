@@ -11,5 +11,3 @@
 ; ;
 
 ; ; /bin/echo OK
-
-; ; /bin/echo OK ;
