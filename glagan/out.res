@@ -3,6 +3,7 @@ microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 out.res
 subject.en.txt
 subject.fr.txt
@@ -10,29 +11,23 @@ test.sh
 
 /bin/cat microshell.c
 #include "microshell.h"
-
-#ifdef TEST_SH
-
-# define TEST		1
-
-#else
-
-# define TEST		0
-
+# ifdef TEST_SH
+# define TEST 1
+# else
+# define TEST 0
 #endif
-
-int	ft_strlen(char *str)
+int		ft_strlen(char *s)
 {
-	int i = 0;
-
-	while(str[i])
+	int	i = 0;
+	while (s[i])
 		i++;
 	return (i);
 }
 
-void	ft_putstr(char *str)
+void	ft_putstr(char *s)
 {
-	write(2, str, ft_strlen(str));
+	write(2, s, ft_strlen(s));
+	exit(1);
 }
 
 void	exit_fatal()
@@ -41,31 +36,31 @@ void	exit_fatal()
 	exit(1);
 }
 
-char	*ft_strdup(char *str)
+char	*ft_strdup(char *s)
 {
 	int		i = 0;
-	char	*res;
+	char	*p;
 
-	if (!(res = malloc(sizeof(char) * (ft_strlen(str) + 1))))
+	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
 		exit_fatal();
-	while(str[i])
+	while (s[i])
 	{
-		res[i] = str[i];
+		p[i] = s[i];
 		i++;
 	}
-	res[i] = str[i];
-	return (res);
+	p[i] = s[i];
+	return (p);
 }
 
 void	clear(t_cmd *cmd)
 {
-	int	i = 0;
+	int		i = 0;
 	t_cmd	*tmp;
 
-	while(cmd)
+	while (cmd)
 	{
 		i = 0;
-		while(cmd->args[i])
+		while (cmd->args[i])
 		{
 			free(cmd->args[i]);
 			i++;
@@ -77,7 +72,7 @@ void	clear(t_cmd *cmd)
 	}
 }
 
-t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
+t_cmd	*create_cmd(t_cmd *tmp, char *av[], int argnum, int is_pipe)
 {
 	t_cmd	*new;
 	int		i = 0;
@@ -123,10 +118,10 @@ int		ft_cd(t_cmd *cmd)
 
 int		ft_non_builtin(t_cmd *cmd, char **env)
 {
-	pid_t pid;
-	int	status = 0;
-	int	res = 0;
-
+	pid_t	pid;
+	int		res = 0;
+	int		status = 0;
+	
 	if (cmd->is_pipe)
 		if (pipe(cmd->fd) < 0)
 			exit_fatal();
@@ -164,13 +159,14 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 	return (res);
 }
 
+
 int		exec(t_cmd *cmd, char **env)
 {
 	int	res = 0;
 
-	while(cmd)
+	while (cmd)
 	{
-		if (!(strcmp(cmd->args[0], "cd")))
+		if (!strcmp(cmd->args[0], "cd"))
 			res = ft_cd(cmd);
 		else
 			res = ft_non_builtin(cmd, env);
@@ -179,10 +175,11 @@ int		exec(t_cmd *cmd, char **env)
 	return (res);
 }
 
+
 int		main(int ac, char *av[], char **env)
 {
-	t_cmd	*cmd;
 	t_cmd	*tmp;
+	t_cmd	*cmd;
 	int		is_pipe = 0;
 	int		res = 0;
 	int		start = 1;
@@ -201,7 +198,7 @@ int		main(int ac, char *av[], char **env)
 				is_pipe = 0;
 				last++;
 			}
-			if (last != start)
+			if (start != last)
 			{
 				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
 				if (!cmd)
@@ -244,24 +241,28 @@ microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 
 /bin/ls | /usr/bin/grep microshell | /usr/bin/grep micro
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 
 /bin/ls | /usr/bin/grep microshell | /usr/bin/grep micro | /usr/bin/grep shell | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 
 /bin/ls | /usr/bin/grep microshell | /usr/bin/grep micro | /usr/bin/grep shell | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep micro | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell | /usr/bin/grep shell
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 
 /bin/ls ewqew | /usr/bin/grep micro | /bin/cat -n ; /bin/echo dernier ; /bin/echo
 dernier
@@ -272,6 +273,7 @@ dernier
      2	microshell.c
      3	microshell.dSYM
      4	microshell.h
+     5	microshell_gla.c
 dernier
 ftest
 
@@ -288,6 +290,7 @@ microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 out.res
 subject.en.txt
 subject.fr.txt
@@ -300,18 +303,22 @@ microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 microshell
 microshell.c
 microshell.dSYM
 microshell.h
+microshell_gla.c
 
 /bin/cat subject.fr.txt | /usr/bin/grep a | /usr/bin/grep b ; /bin/cat subject.fr.txt ;
 Ecrire un programme qui aura ressemblera à un executeur de commande shell
