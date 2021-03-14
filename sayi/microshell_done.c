@@ -111,7 +111,7 @@ int		ft_cd(t_cmd *cmd)
 int		ft_non_builtin(t_cmd *cmd, char **env)
 {
 	pid_t	pid;
-	int		status = 0;
+	int		status;
 	int		res = 0;
 	if (cmd->is_pipe)
 		if(pipe(cmd->fd) < 0)
@@ -142,10 +142,10 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 		{
 			close(cmd->fd[1]);
 			if (!cmd->next)
-				close(cmd->fd[1]);
+				close(cmd->fd[0]);
 		}
 		if (cmd->prev && cmd->prev->is_pipe)
-			close(cmd->fd[0]);
+			close(cmd->prev->fd[0]);
 	}
 	return (res);
 }
@@ -167,8 +167,8 @@ int		exec(t_cmd *cmd, char **env)
 
 int		main(int ac, char *av[], char **env)
 {
-	t_cmd	*cmd;
 	t_cmd	*tmp;
+	t_cmd	*cmd;
 	int		start = 1;
 	int		last = 1;
 	int		res = 0;

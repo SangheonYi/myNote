@@ -11,15 +11,6 @@ test.sh
 /bin/cat microshell.c
 #include "microshell.h"
 
-#ifdef TEST_SH
-
-# define TEST		1
-
-#else
-
-# define TEST		0
-
-#endif
 int	ft_strlen(char *str)
 {
 	int i = 0;
@@ -212,8 +203,6 @@ int		main(int ac, char *av[], char **env)
 	}
 	res = exec(cmd, env);
 	clear(cmd);
-	while(TEST)
-		;
 	return (res);
 }
 
@@ -222,3 +211,31 @@ microshell.c
 
 /bin/ls salut
 
+;
+
+; ;
+
+; ; /bin/echo OK
+OK
+
+; ; /bin/echo OK ;
+OK
+
+; ; /bin/echo OK ; ;
+OK
+
+; ; /bin/echo OK ; ; ; /bin/echo OK
+OK
+OK
+
+/bin/ls | /usr/bin/grep microshell
+microshell
+microshell.c
+microshell.dSYM
+microshell.h
+
+/bin/ls | /usr/bin/grep microshell | /usr/bin/grep micro
+microshell
+microshell.c
+microshell.dSYM
+microshell.h
