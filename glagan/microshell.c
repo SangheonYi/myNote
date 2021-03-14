@@ -1,5 +1,15 @@
 #include "microshell.h"
 
+#ifdef TEST_SH
+
+# define TEST		1
+
+#else
+
+# define TEST		0
+
+#endif
+
 int	ft_strlen(char *str)
 {
 	int i = 0;
@@ -192,5 +202,6 @@ int		main(int ac, char *av[], char **env)
 	}
 	res = exec(cmd, env);
 	clear(cmd);
+	while(TEST);
 	return (res);
 }
