@@ -1,28 +1,33 @@
 # include "microshell.h"
 
-int		ft_strlen(char *s) {
-	int i= 0;
+int		ft_strlen(char *s)
+{
+	int	i = 0;
 	while (s[i])
 		i++;
 	return (i);
 }
 
-void	ft_putstr(char *s) {
+void	ft_putstr(char *s)
+{
 	write(2, s, ft_strlen(s));
 }
 
-int		exit_fatal() {
+int		exit_fatal()
+{
 	ft_putstr("error: fatal\n");
 	exit(1);
 }
 
-char	*ft_strdup(char *str) {
-	int i = 0;
-	char *p;
+char	*ft_strdup(char *str)
+{
+	int		i = 0;
+	char	*p;
 
 	if (!(p = malloc(sizeof(char) * (ft_strlen(str) + 1))))
 		exit_fatal();
-	while(str[i]) {
+	while (str[i])
+	{
 		p[i] = str[i];
 		i++;
 	}
@@ -30,11 +35,13 @@ char	*ft_strdup(char *str) {
 	return (p);
 }
 
-void	clear(t_cmd *cmd) {
-	t_cmd *tmp;
-	int i = 0;
+void	clear(t_cmd *cmd)
+{
+	t_cmd	*tmp;
+	int		i = 0;
 
-	while (cmd) {
+	while (cmd)
+	{
 		i = 0;
 		while (cmd->args[i])
 		{
@@ -50,8 +57,8 @@ void	clear(t_cmd *cmd) {
 
 t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
 {
-	t_cmd *new;
-	int i = 0;
+	t_cmd	*new;
+	int		i = 0;
 
 	if (!(new = malloc(sizeof(t_cmd))))
 		exit_fatal();
@@ -73,8 +80,8 @@ t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
 
 int		ft_cd(t_cmd *cmd)
 {
-	int res = 0;
-	int i = 0;
+	int	res = 0;
+	int	i = 0;
 	while (cmd->args[i])
 		i++;
 	if (i != 2)
@@ -93,9 +100,9 @@ int		ft_cd(t_cmd *cmd)
 
 int		ft_non_builtin(t_cmd *cmd, char **env)
 {
-	pid_t pid;
-	int	status = 0;
-	int res = 0;
+	pid_t	pid;
+	int		status = 0;
+	int		res = 0;
 	if (cmd->is_pipe)
 		if(pipe(cmd->fd) < 0)
 			exit_fatal();
@@ -104,7 +111,6 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 		exit_fatal();
 	else if (pid == 0)
 	{
-		//child
 		if (cmd->is_pipe && dup2(cmd->fd[1], 1) < 0)
 			exit_fatal();
 		if (cmd->prev && cmd->prev->is_pipe && dup2(cmd->prev->fd[0], 0) < 0)
@@ -117,7 +123,7 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 		}
 		exit(res);
 	}
-	else//parent
+	else
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
@@ -136,7 +142,7 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 
 int		exec(t_cmd *cmd, char **env)
 {
-	int res = 0;
+	int	res = 0;
 
 	while(cmd)
 	{
@@ -149,15 +155,16 @@ int		exec(t_cmd *cmd, char **env)
 	return(res);
 }
 
-int		main(int ac, char *av[], char **env) {
-	t_cmd *cmd;
-	t_cmd *tmp;
+int		main(int ac, char *av[], char **env)
+{
+	t_cmd	*cmd;
+	t_cmd	*tmp;
 	int		start = 1;
 	int		last = 1;
 	int		res = 0;
 	int		is_pipe = 0;
 
-	while(last < ac)
+	while (last < ac)
 	{
 		if (!strcmp("|", av[last]) || !strcmp(";", av[last]) || last + 1 == ac)
 		{
