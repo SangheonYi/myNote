@@ -125,7 +125,7 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 		if (cmd->is_pipe)
 		{
 			close(cmd->fd[1]);
-			if (cmd->next)
+			if (!cmd->next)
 				close(cmd->fd[1]);
 		}
 		if (cmd->prev && cmd->prev->is_pipe)

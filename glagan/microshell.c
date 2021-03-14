@@ -1,59 +1,59 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/wait.h>
+#include "microshell.h"
 
-typedef struct		s_cmd
-{
-	char			**args;
-	int				is_pipe;
-	int				fd[2];
-	struct	s_cmd	*prev;
-	struct	s_cmd	*next;
-}					t_cmd;
+#ifdef TEST_SH
 
-int		ft_strlen(char *s)
+# define TEST		1
+
+#else
+
+# define TEST		0
+
+#endif
+int	ft_strlen(char *str)
 {
 	int i = 0;
-	while (s[i])
+
+	while(str[i])
 		i++;
 	return (i);
 }
 
-void	ft_putstr(char *s)
+void	ft_putstr(char *str)
 {
-	write(2, s, ft_strlen(s));
+	write(2, str, ft_strlen(str));
 }
 
 void	exit_fatal()
 {
-	ft_putstr("error fatal\n");
+	ft_putstr("error: fatal\n");
 	exit(1);
 }
 
-char	*ft_strdup(char *s)
+char	*ft_strdup(char *str)
 {
-	int	i = 0;
-	char *p;
-	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
+	int		i = 0;
+	char	*res;
+
+	if (!(res = malloc(sizeof(char) * (ft_strlen(str) + 1))))
 		exit_fatal();
-	while (s[i])
+	while(str[i])
 	{
-		p[i] = s[i];
+		res[i] = str[i];
 		i++;
 	}
-	p[i] = 0;
-	return (p);
+	res[i] = str[i];
+	return (res);
 }
 
 void	clear(t_cmd *cmd)
 {
-	t_cmd *tmp;
 	int	i = 0;
-	while (cmd)
+	t_cmd	*tmp;
+
+	while(cmd)
 	{
 		i = 0;
-		while (cmd->args[i])
+		while(cmd->args[i])
 		{
 			free(cmd->args[i]);
 			i++;
@@ -65,15 +65,16 @@ void	clear(t_cmd *cmd)
 	}
 }
 
-t_cmd	*create_cmd(t_cmd *tmp, char **av, int av_num, int is_pipe)
+t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
 {
-	t_cmd *new;
-	int	i = 0;
+	t_cmd	*new;
+	int		i = 0;
+
 	if (!(new = malloc(sizeof(t_cmd))))
 		exit_fatal();
-	if (!(new->args = malloc(sizeof(char*) * (av_num + 1))))
+	if (!(new->args = malloc(sizeof(char *) * (argnum + 1))))
 		exit_fatal();
-	while (i < av_num)
+	while (i < argnum)
 	{
 		new->args[i] = ft_strdup(av[i]);
 		i++;
@@ -89,14 +90,15 @@ t_cmd	*create_cmd(t_cmd *tmp, char **av, int av_num, int is_pipe)
 
 int		ft_cd(t_cmd *cmd)
 {
-	int res = 0;
-	int i = 0;
+	int	res = 0;
+	int	i = 0;
+
 	while (cmd->args[i])
 		i++;
 	if (i != 2)
 	{
 		ft_putstr("error: cd: bad arguments\n");
-		return (1);
+		return(1);
 	}
 	else if ((res = chdir(cmd->args[1])) < 0)
 	{
@@ -109,9 +111,10 @@ int		ft_cd(t_cmd *cmd)
 
 int		ft_non_builtin(t_cmd *cmd, char **env)
 {
-	pid_t	pid;
+	pid_t pid;
+	int	status = 0;
 	int	res = 0;
-	int	status;
+
 	if (cmd->is_pipe)
 		if (pipe(cmd->fd) < 0)
 			exit_fatal();
@@ -132,7 +135,7 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 		}
 		exit(res);
 	}
-	else if (pid > 0)
+	else
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
@@ -152,9 +155,10 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 int		exec(t_cmd *cmd, char **env)
 {
 	int	res = 0;
-	while (cmd)
+
+	while(cmd)
 	{
-		if (!strcmp(cmd->args[0], "cd"))
+		if (!(strcmp(cmd->args[0], "cd")))
 			res = ft_cd(cmd);
 		else
 			res = ft_non_builtin(cmd, env);
@@ -163,30 +167,31 @@ int		exec(t_cmd *cmd, char **env)
 	return (res);
 }
 
-int		main(int ac, char **av, char **env)
+int		main(int ac, char *av[], char **env)
 {
-	t_cmd *tmp;
-	t_cmd *cmd;
-	int	start = 1;
-	int	last = 1;
-	int res = 0;
-	int	is_pipe = 0;
+	t_cmd	*cmd;
+	t_cmd	*tmp;
+	int		is_pipe = 0;
+	int		res = 0;
+	int		start = 1;
+	int		last = 1;
+
 	while (last < ac)
 	{
-		if (!strcmp(av[last], "|") || !strcmp(av[last], ";") || last + 1 == ac)
+		if (!strcmp("|", av[last]) || !strcmp(";", av[last]) || last + 1 == ac)
 		{
-			if (!strcmp(av[last], "|"))
+			if (!strcmp("|", av[last]))
 				is_pipe = 1;
-			else if (!strcmp(av[last], ";"))
+			else if (!strcmp(";", av[last]))
 				is_pipe = 0;
 			else
 			{
 				is_pipe = 0;
 				last++;
 			}
-			if (last - start != 0)
+			if (last != start)
 			{
-				tmp = create_cmd(tmp, &av[start], last - start, is_pipe);
+				tmp = create_cmd(tmp, av + start, last - start, is_pipe);
 				if (!cmd)
 					cmd = tmp;
 			}
@@ -196,5 +201,7 @@ int		main(int ac, char **av, char **env)
 	}
 	res = exec(cmd, env);
 	clear(cmd);
+	while(TEST)
+		;
 	return (res);
 }
