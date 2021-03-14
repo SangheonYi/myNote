@@ -3,6 +3,16 @@
 #include <string.h>
 #include <sys/wait.h>
 
+#ifdef TEST_SH
+
+# define TEST		1
+
+#else
+
+# define TEST		0
+
+#endif
+
 typedef struct		s_cmd
 {
 	char			**args;
@@ -199,5 +209,6 @@ int		main(int ac, char **av, char **env)
 	}
 	res = exec(cmd, env);
 	clear(cmd);
+	while(TEST);
 	return (res);
 }
