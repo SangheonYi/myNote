@@ -1,13 +1,16 @@
 #include "microshell.h"
+
 # ifdef TEST_SH
 # define TEST 1
 # else
 # define TEST 0
 #endif
+
 int		ft_strlen(char *s)
 {
-	int	i = 0;
-	while (s[i])
+	int i = 0;
+	
+	while(s[i])
 		i++;
 	return (i);
 }
@@ -15,10 +18,9 @@ int		ft_strlen(char *s)
 void	ft_putstr(char *s)
 {
 	write(2, s, ft_strlen(s));
-	exit(1);
 }
 
-void	exit_fatal()
+int	exit_fatal()
 {
 	ft_putstr("error: fatal\n");
 	exit(1);
@@ -26,18 +28,18 @@ void	exit_fatal()
 
 char	*ft_strdup(char *s)
 {
-	int		i = 0;
-	char	*p;
+	int i = 0;
+	char *new;
 
-	if (!(p = malloc(sizeof(char) * (ft_strlen(s) + 1))))
+	if (!(new = malloc(sizeof(char) * (ft_strlen(s) + 1))))
 		exit_fatal();
 	while (s[i])
 	{
-		p[i] = s[i];
+		new[i] = s[i];
 		i++;
 	}
-	p[i] = s[i];
-	return (p);
+	new[i] = s[i];
+	return (new);
 }
 
 void	clear(t_cmd *cmd)
@@ -60,7 +62,7 @@ void	clear(t_cmd *cmd)
 	}
 }
 
-t_cmd	*create_cmd(t_cmd *tmp, char *av[], int argnum, int is_pipe)
+t_cmd	*create_cmd(t_cmd *tmp, char **av, int argnum, int is_pipe)
 {
 	t_cmd	*new;
 	int		i = 0;
@@ -83,17 +85,18 @@ t_cmd	*create_cmd(t_cmd *tmp, char *av[], int argnum, int is_pipe)
 	return (new);
 }
 
+
 int		ft_cd(t_cmd *cmd)
 {
-	int	res = 0;
 	int	i = 0;
+	int	res = 0;
 
 	while (cmd->args[i])
 		i++;
 	if (i != 2)
 	{
 		ft_putstr("error: cd: bad arguments\n");
-		return(1);
+		exit(1);
 	}
 	else if ((res = chdir(cmd->args[1])) < 0)
 	{
@@ -107,9 +110,9 @@ int		ft_cd(t_cmd *cmd)
 int		ft_non_builtin(t_cmd *cmd, char **env)
 {
 	pid_t	pid;
-	int		res = 0;
-	int		status = 0;
-	
+	int	res = 0;
+	int	status = 0;
+
 	if (cmd->is_pipe)
 		if (pipe(cmd->fd) < 0)
 			exit_fatal();
@@ -147,10 +150,9 @@ int		ft_non_builtin(t_cmd *cmd, char **env)
 	return (res);
 }
 
-
 int		exec(t_cmd *cmd, char **env)
 {
-	int	res = 0;
+	int res = 0;
 
 	while (cmd)
 	{
@@ -163,23 +165,22 @@ int		exec(t_cmd *cmd, char **env)
 	return (res);
 }
 
-
-int		main(int ac, char *av[], char **env)
+int main(int ac, char *av[], char **env)
 {
-	t_cmd	*tmp;
 	t_cmd	*cmd;
-	int		is_pipe = 0;
-	int		res = 0;
+	t_cmd	*tmp;
 	int		start = 1;
 	int		last = 1;
+	int		res = 0;
+	int		is_pipe = 0;
 
-	while (last < ac)
+	while (last < ac) 
 	{
-		if (!strcmp("|", av[last]) || !strcmp(";", av[last]) || last + 1 == ac)
+		if (!strcmp(av[last], "|") || !strcmp(av[last], ";") || last + 1 == ac)
 		{
-			if (!strcmp("|", av[last]))
+			if (!strcmp(av[last], "|"))
 				is_pipe = 1;
-			else if (!strcmp(";", av[last]))
+			else if (!strcmp(av[last], ";"))
 				is_pipe = 0;
 			else
 			{
