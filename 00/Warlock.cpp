@@ -1,15 +1,30 @@
-# include "Warlock.hpp"
+#include "Warlock.hpp"
 
-int	main() {
-	std::cout << "--- Constructors:\n";
-	Warlock richard("Richard", "Master");
-	std::cout << "--- Introduce:\n";
-	richard.introduce();
+Warlock::Warlock(std::string const &name, std::string const &title):
+	name(name), title(title)
+{
+	std::cout << this->name << ": What a boring day\n";
+}
 
-	std::cout << "--- New Title:\n";
-	richard.setTitle("no mmmmas");
-	richard.introduce();
+Warlock::~Warlock(void) {
+	std::cout << this->name << ": My job here is done!\n";
+}
 
-	std::cout << "--- Destructors:\n"
-	return (0);
+std::string const & Warlock::getName() const
+{
+	return (this->name);
+}
+std::string const & Warlock::getTitle() const
+{
+	return (this->title);
+}
+
+void Warlock::setTitle(std::string const &title)
+{
+	this->title = title;
+}
+
+void Warlock::introduce(void) const
+{
+	std::cout << this->name << ":my name is " << this->name << ", " << this->title << "!\n";
 }

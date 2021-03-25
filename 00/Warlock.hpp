@@ -9,8 +9,8 @@ class Warlock {
 		std::string title;
 
 		Warlock();
-		Warlock(const &name);
-		&operator=(Warlock const &other);
+		Warlock(Warlock const &other);
+		Warlock &operator=(Warlock const &other);
 	public:
 		Warlock(std::string const &name, std::string const &title);
 		virtual ~Warlock();
@@ -19,5 +19,5 @@ class Warlock {
 		
 		void	setTitle(std::string const &title);
 		void	introduce(void) const;
-}
+};
 # endif
