@@ -3,6 +3,8 @@
 # include <string>
 # include <iostream>
 # include <vector>
+# include "ASpell.hpp"
+# include "ATarget.hpp"
 
 class Warlock {
 	private:
@@ -18,7 +20,7 @@ class Warlock {
 		virtual ~Warlock();
 		std::string const &getName(void) const;
 		std::string const &getTitle(void) const;
-		
+
 		void	setTitle(std::string const &title);
 		void	introduce(void) const;
 		void	learnSpell(ASpell *spell);

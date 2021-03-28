@@ -3,6 +3,8 @@
 # include <iostream>
 # include <string>
 
+class ATarget;
+
 class ASpell {
 private:
 	std::string name;
@@ -18,4 +20,5 @@ public:
 	void	launch(ATarget const& target) const;
 	virtual ASpell*	clone() const = 0;
 };
+# include "ATarget.hpp"
 #endif

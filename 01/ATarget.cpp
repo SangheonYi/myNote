@@ -1,12 +1,13 @@
 #include "ATarget.hpp"
 
-ATarget::ATarget() {}
+ATarget::ATarget():
+	type() {}
 
 ATarget::ATarget(std::string const& type):
 	type(type) {}
 
 ATarget::ATarget(ATarget const& other):
-	type(ohter.type) {}
+	type(other.type) {}
 
 ATarget::~ATarget() {};
 
@@ -21,7 +22,7 @@ std::string const &ATarget::getType() const
 	return (this->type);
 }
 
-void	ATarget::getHitSpell(ASpell const &spell) const
+void	ATarget::getHitBySpell(ASpell const &spell) const
 {
 	std::cout << this->type << " has been " << spell.getEffects() << "!\n";
 }
