@@ -10,7 +10,7 @@ class Warlock {
 	private:
 		std::string name;
 		std::string title;
-		std::vector	<ASpell*>	spells;
+		SpellBook spellBook;
 
 		Warlock();
 		Warlock(Warlock const &other);
@@ -23,6 +23,7 @@ class Warlock {
 
 		void	setTitle(std::string const &title);
 		void	introduce(void) const;
+
 		void	learnSpell(ASpell *spell);
 		void	forgetSpell(std::string const &name);
 		void	launchSpell(std::string const &name, ATarget const &target);
