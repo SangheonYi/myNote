@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cc                                            :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncolomer <ncolomer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sayi <sayi@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/17 00:35:12 by ncolomer          #+#    #+#             */
-/*   Updated: 2020/02/13 16:48:51 by ncolomer         ###   ########.fr       */
+/*   Updated: 2021/03/30 11:55:09 by sayi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,17 @@ int main(void)
 	Fireball *fire = new Fireball();
 	Fwoosh *air = new Fwoosh();
 	richard.learnSpell(water);
+
 	richard.learnSpell(fire);
+
 	richard.forgetSpell("Fwoosh");
+
 	richard.learnSpell(air);
+
 	richard.forgetSpell("Fwoosh");
+
 	richard.forgetSpell("Fwoosh");
+
 	richard.learnSpell(air);
 
 	std::cout << "--- Targets:\n";

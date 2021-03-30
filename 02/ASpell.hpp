@@ -17,7 +17,7 @@ public:
 	ASpell	&operator=(ASpell const& other);
 	std::string const& getName() const;
 	std::string const& getEffects() const;
-	void	launch(ATarget const& target) const;
+	void	launch(ATarget const& target);
 	virtual ASpell*	clone() const = 0;
 };
 # include "ATarget.hpp"

@@ -31,7 +31,6 @@ void Warlock::introduce(void) const
 }
 
 void	Warlock::learnSpell(ASpell *spell) {
-	if (spell)
 		this->spellBook.learnSpell(spell);
 }
 

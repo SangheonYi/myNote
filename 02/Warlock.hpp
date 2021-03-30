@@ -5,6 +5,7 @@
 # include <vector>
 # include "ASpell.hpp"
 # include "ATarget.hpp"
+# include "SpellBook.hpp"
 
 class Warlock {
 	private:

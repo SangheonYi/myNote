@@ -3,9 +3,9 @@
 Polymorph::Polymorph(): 
 	ASpell("Polymorph", "turned to a sheep") {}
 
-Polymorph::~Polymorph {}
+Polymorph::~Polymorph() {}
 
-ASpell	Polymorph::*clone() const {
+ASpell	*Polymorph::clone() const {
 	return (new Polymorph(*this));
 }
 

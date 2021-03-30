@@ -10,7 +10,7 @@ TargetGenerator::~TargetGenerator() {
 }
 
 void	TargetGenerator::learnTargetType(ATarget *target) {
-	if (type)
+	if (target)
 	{
 		std::vector<ATarget*>::iterator ie = this->targets.end();
 		for (std::vector<ATarget*>::iterator i = this->targets.begin();i != ie; i++)
@@ -23,6 +23,7 @@ void	TargetGenerator::learnTargetType(ATarget *target) {
 }
 
 void	TargetGenerator::forgetTargetType(std::string const &type)
+{
 	std::vector<ATarget*>::iterator ie = this->targets.end();
 	for (std::vector<ATarget*>::iterator i = this->targets.begin();i != ie; i++)
 	{
@@ -34,7 +35,7 @@ void	TargetGenerator::forgetTargetType(std::string const &type)
 	}
 }
 
-ATarget	TargetGenerator::*createTarget(std::string const &type) {
+ATarget	*TargetGenerator::createTarget(std::string const &type) {
 	std::vector<ATarget*>::iterator ie = this->targets.end();
 	for (std::vector<ATarget*>::iterator i = this->targets.begin();i != ie; i++)
 	{
