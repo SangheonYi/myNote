@@ -1,7 +1,9 @@
 #include "Warlock.hpp"
 
 Warlock::Warlock(std::string const &name, std::string const &title):
-	name(name), title(title) {}
+	name(name), title(title) {
+	std::cout << this->name << ": What a boring day\n";
+}
 
 
 Warlock::~Warlock() {
@@ -26,4 +28,18 @@ void	Warlock::setTitle(std::string const &title)
 void	Warlock::introduce() const
 {
 	std::cout << this->name << ": My name is " << this->name << ", " << this->title << "!\n";
+}
+
+void	Warlock::learnSpell(ASpell *spell) {
+	this->spellBook.learnSpell(spell);
+}
+
+void	Warlock::forgetSpell(std::string const &name) {
+	this->spellBook.forgetSpell(name);
+}
+
+void	Warlock::launchSpell(std::string const &name, ATarget const &target) {
+	ASpell *spell = this->spellBook.generateSpell(name);
+	if (spell)
+		spell->launch(target);
 }

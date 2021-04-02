@@ -8,10 +8,10 @@ class	ATarget;
 class	ASpell {
 	private:
 		std::string name;
-		std::strung effects;
+		std::string effects;
 	public:
 		ASpell();
-		~ASpell();
+		virtual	~ASpell();
 		ASpell(ASpell const &other);
 		ASpell	&operator=(ASpell const &other);
 
@@ -22,6 +22,6 @@ class	ASpell {
 		void	launch(ATarget const &target) const;
 		virtual ASpell	*clone() const = 0;
 };
+# include "ATarget.hpp"
 #endif
 
-# include "ATarget.hpp"
