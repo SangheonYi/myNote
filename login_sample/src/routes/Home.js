@@ -1,14 +1,6 @@
 import React from "react";
 import axios from "axios";
 
-function getReq() {
-  const clientId = "client_id=e854947719be26303e9ccc6beb7e6300";
-  const redirectUri = "redirect_uri=http://localhost:3000/login";
-  const responseType = "response_type=code";
-  const loginRequest = "https://kauth.kakao.com/oauth/authorize";
-  const req = `${loginRequest}?${clientId}&${redirectUri}&${responseType}`;
-}
-
 class Home extends React.Component {
 	constructor(props) {
         super(props);
@@ -17,19 +9,18 @@ class Home extends React.Component {
     }
 
   render() {
-	const clientId = "client_id=e854947719be26303e9ccc6beb7e6300";
-	const redirectUri = "redirect_uri=http://localhost:3000/login/";
-	const responseType = "response_type=code";
-	const loginRequest = "https://kauth.kakao.com/oauth/authorize";
-	const req = `${loginRequest}?${clientId}&${redirectUri}&${responseType}`;
+  const jsKey = "a337783bc70075abaeb0f047a09ced63"
+  const redirectUri = "http://localhost:3000/login/"
+  window.Kakao.init(jsKey);
+	console.log(window.Kakao.isInitialized());
+  window.Kakao.Auth.authorize({ redirectUri });
 
-	console.log(this.state);
     return (
       <div>
-        <h1 onClick={getReq}>Hellow here is Home</h1>
-		<a href={req}>
-			login
-		</a>
+        <h1>Hellow here is Home</h1>
+		<button>
+    {window.Kakao.isInitialized().toString()}
+		</button>
       </div>
     );
   }
