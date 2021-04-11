@@ -1,4 +1,5 @@
 import React from "react";
+import GetUser from "./GetUser";
 
 class App extends React.Component {
   state = {
@@ -34,7 +35,7 @@ class App extends React.Component {
       console.log(window.Kakao.isInitialized());
     }
 
-    return <h1>kakologin{loginResult ? " success" : " not yet"}</h1>;
+    return <h1>kakologin{loginResult ? <GetUser/> : " not yet"}</h1>;
   }
 }
 
