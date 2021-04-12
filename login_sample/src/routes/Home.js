@@ -6,7 +6,8 @@ class Home extends React.Component {
     loginResult: false
   };
 
-  componentDidMount() {
+  // componentDidMount()
+  klogin = () => {
     const scope = "profile, age_range, birthday";
     const home = this;
     let loginResult = false;
@@ -35,6 +36,9 @@ class Home extends React.Component {
     return (
       <div>
         <h1>{loginResult ? <GetUser/>: "not yet"}</h1>
+        <button onClick={this.klogin}>
+          login
+        </button>
       </div>
     );
   }

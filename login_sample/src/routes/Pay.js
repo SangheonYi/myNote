@@ -1,91 +1,54 @@
 import React from "react";
-import { payReady } from "./api";
+import axios from "axios";
 
 class Pay extends React.Component {
-  constructor(props) {
-    super(props);
-    console.log("Pay created");
-  }
-
-  payReady = async () => {
-    // set variables
-    const item_name = "초코파이";
-    const quantity = 1;
-    const total_amount = 2200;
-    const vat_amount = 200;
-    const tax_free_amount = 0;
-
-    // set redirect_url
-    const approval_url = "http://localhost:3000/PayResult/";
-    const fail_url = "http://localhost:3000/PayResult/";
-    const cancel_url = "http://localhost:3000/PayResult/";
-
-    // set data
-    const data = [
-      "cid=TC0ONETIME",
-      "partner_order_id=partner_order_id",
-      "partner_user_id=partner_user_id",
-      `item_name=${item_name}`,
-      `quantity=${quantity}`,
-      `total_amount=${total_amount}`,
-      `vat_amount=${vat_amount}`,
-      `tax_free_amount=${tax_free_amount}`,
-      `approval_url=${approval_url}`,
-      `fail_url=${fail_url}`,
-      `cancel_url=${cancel_url}`,
-    ].join("&"); // encode data (application/x-www-form-urlencoded)
-
-    const config = {
-      headers: {
-        Authorization: "KakaoAK aff05ca03a8103511ddc9bdd58f88055", // admin key
-        "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-      },
-      data,
-    };
-    /* 	  try {
-		await axios.get(`https://kapi.kakao.com/v1/payment/ready`,
-		config);
-	  } catch (err) {
-		console.log(err);
-	  } */
-    console.log("is done?");
-  };
-
-  payReadyPrereq = async () => {
-    // set variables
-    const item_name = "초코파이";
-    const quantity = 1;
-    const total_amount = 2200;
-    const vat_amount = 200;
-    const tax_free_amount = 0;
-
-    // set redirect_url
-    const approval_url = "http://localhost:3000/PayResult/";
-    const fail_url = "http://localhost:3000/PayResult/";
-    const cancel_url = "http://localhost:3000/PayResult/";
-
-    // set data
-    const params = {
+  state = {
+    next_redirect_pc_url: "",
+    tid: "",
+    params: {
       cid: "TC0ONETIME",
       partner_order_id: "partner_order_id",
       partner_user_id: "partner_user_id",
-      item_name,
-      quantity,
-      total_amount,
-      vat_amount,
-      tax_free_amount,
-      approval_url,
-      fail_url,
-      cancel_url,
-    };
-
-    const response = payReady(params);
-    console.log(response);
+      item_name: "초코파이",
+      quantity: 1,
+      total_amount: 2200,
+      vat_amount: 200,
+      tax_free_amount: 0,
+      approval_url: "http://localhost:3000/pay/",
+      fail_url: "http://localhost:3000/pay/",
+      cancel_url: "http://localhost:3000/pay/",
+    },
   };
+  componentDidMount() {
+    const { params } = this.state;
+    axios({
+      url: "/v1/payment/ready",
+      method: "POST",
+      headers: {
+        Authorization: "KakaoAK aff05ca03a8103511ddc9bdd58f88055",
+        "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+      params,
+    }).then((response) => {
+      const {
+        data: { next_redirect_pc_url, tid }
+      } = response;
 
-  render(props) {
-    this.payReadyPrereq();
-    return <h2>Pay page</h2>;
+      console.log(next_redirect_pc_url);
+      console.log(tid);
+      this.setState({ next_redirect_pc_url, tid });
+    });
+  }
+
+  render() {
+    const { next_redirect_pc_url, tid } = this.state;
+
+    return (<div>
+      <h2>Pay page</h2>
+      <a href={ next_redirect_pc_url }>
+        { next_redirect_pc_url }
+      </a>
+      </div>);
   }
 }
 
