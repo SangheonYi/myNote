@@ -32,23 +32,24 @@ class PayReady extends React.Component {
       params,
     }).then((response) => {
       const {
-        data: { next_redirect_pc_url, tid }
+        data: { next_redirect_pc_url, tid },
       } = response;
 
       console.log(next_redirect_pc_url);
       console.log(tid);
+	  window.localStorage.setItem("tid", tid);
       this.setState({ next_redirect_pc_url, tid });
     });
   }
 
   render() {
     const { next_redirect_pc_url } = this.state;
-    return (<div>
-      <h2>Pay page</h2>
-      <a href={ next_redirect_pc_url }>
-        { next_redirect_pc_url }
-      </a>
-      </div>);
+    return (
+      <div>
+        <h2>Pay page</h2>
+        <a href={next_redirect_pc_url}>{next_redirect_pc_url}</a>
+      </div>
+    );
   }
 }
 export default PayReady;
