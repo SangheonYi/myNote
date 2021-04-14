@@ -34,11 +34,12 @@ class PayReady extends React.Component {
       const {
         data: { next_redirect_pc_url, tid },
       } = response;
+	  window.localStorage.setItem("tid", tid);
 
+      window.location.href = next_redirect_pc_url;
       console.log(next_redirect_pc_url);
       console.log(tid);
-	  window.localStorage.setItem("tid", tid);
-      this.setState({ next_redirect_pc_url, tid });
+      // this.setState({ next_redirect_pc_url, tid });
     });
   }
 
