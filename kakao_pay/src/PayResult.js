@@ -10,15 +10,11 @@ class PayResult extends React.Component {
     } = props;
 
     params.pg_token = search.split("=")[1];
-    console.log(`pg_token: ${params.pg_token}`);
-    console.log(`tid: ${this.state.tid}`);
   }
 
   state = {
-    tid: window.localStorage.getItem("tid"),
     params: {
       cid: "TC0ONETIME",
-    //   tid: "T1234567890123456789",
       tid: window.localStorage.getItem("tid"),
       partner_order_id: "partner_order_id",
       partner_user_id: "partner_user_id",
@@ -29,8 +25,6 @@ class PayResult extends React.Component {
   componentDidMount() {
     const { params } = this.state;
 
-	console.log("params:");
-	console.log(params);
     axios({
       url: "/v1/payment/approve",
       method: "POST",
@@ -41,10 +35,6 @@ class PayResult extends React.Component {
       params,
     }).then((response) => {
       console.log(response);
-
-    //   console.log(next_redirect_pc_url);
-    //   console.log(tid);
-    //   this.setState({ next_redirect_pc_url, tid });
     });
   }
 
