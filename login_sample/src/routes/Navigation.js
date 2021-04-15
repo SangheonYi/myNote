@@ -5,7 +5,7 @@ import "./Navigation.css";
 function Navigation() {
 	return <div className="nav">
 		<Link to="/">Home</Link>
-		<Link to="/Pay">Pay</Link>
+		<Link to="/Messege">Messege</Link>
 	</div>;
 }
 export default Navigation;
