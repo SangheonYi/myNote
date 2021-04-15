@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import IsMobile from "./IsMobile";
 
 class PayReady extends React.Component {
   state = {
@@ -32,13 +33,16 @@ class PayReady extends React.Component {
       params,
     }).then((response) => {
       const {
-        data: { next_redirect_pc_url, tid },
+        data: { next_redirect_app_url, next_redirect_pc_url, tid },
       } = response;
 	  window.localStorage.setItem("tid", tid);
+      if (IsMobile)
+      // console.log(`mobile: ${next_redirect_app_url}`);
 
-      window.location.href = next_redirect_pc_url;
-      console.log(next_redirect_pc_url);
-      console.log(tid);
+        window.location.href = next_redirect_app_url;
+      else
+      // console.log(`pc: ${next_redirect_pc_url}`);
+        window.location.href = next_redirect_pc_url;
       // this.setState({ next_redirect_pc_url, tid });
     });
   }
