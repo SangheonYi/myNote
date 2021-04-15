@@ -37,13 +37,9 @@ class PayReady extends React.Component {
       } = response;
 	  window.localStorage.setItem("tid", tid);
       if (IsMobile)
-      // console.log(`mobile: ${next_redirect_app_url}`);
-
         window.location.href = next_redirect_app_url;
       else
-      // console.log(`pc: ${next_redirect_pc_url}`);
         window.location.href = next_redirect_pc_url;
-      // this.setState({ next_redirect_pc_url, tid });
     });
   }
 
