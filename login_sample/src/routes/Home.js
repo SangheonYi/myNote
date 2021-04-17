@@ -1,14 +1,20 @@
 import React from "react";
 import GetUser from "./GetUser";
+import Message from "./Message";
 
 class Home extends React.Component {
   state = {
-    loginResult: false
+    loginResult: false,
+    msgRequest: false,
   };
 
-  // componentDidMount()
+  sendMSG = () => {
+    if (this.state.loginResult && window.Kakao.isInitialized())
+      this.setState({ loginResult: true, msgRequest: true });
+  };
+
   klogin = () => {
-    const scope = "profile, age_range, birthday";
+    const scope = "profile, age_range, birthday, talk_message";
     const home = this;
     let loginResult = false;
 
@@ -23,10 +29,10 @@ class Home extends React.Component {
         console.log(error);
       },
     });
-  }
+  };
 
   render() {
-    const { loginResult } = this.state;
+    const { loginResult, msgRequest } = this.state;
     const jsKey = "a337783bc70075abaeb0f047a09ced63";
 
     if (!window.Kakao.isInitialized()) {
@@ -35,10 +41,10 @@ class Home extends React.Component {
     }
     return (
       <div>
-        <h1>{loginResult ? <GetUser/>: "not yet"}</h1>
-        <button onClick={this.klogin}>
-          login
-        </button>
+        <h1>{loginResult ? <GetUser /> : "not yet"}</h1>
+        <button onClick={this.klogin}>login</button>
+        <button onClick={this.sendMSG}>Message</button>
+        {msgRequest ? <Message /> : "didn't send message"}
       </div>
     );
   }
