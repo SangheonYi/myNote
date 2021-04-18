@@ -14,7 +14,7 @@ class Home extends React.Component {
   };
 
   klogin = () => {
-    const scope = "profile, age_range, birthday, talk_message";
+    const scope = "profile, age_range, birthday, talk_message, friends";
     const home = this;
     let loginResult = false;
 

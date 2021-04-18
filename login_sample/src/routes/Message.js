@@ -1,8 +1,8 @@
 import React from "react";
 
 const content = {
-  title: "딸기 치즈 케익",
-  description: "#케익 #딸기 #삼평동 #카페 #분위기 #소개팅",
+  title: "카카오톡 링크 4.0",
+  description: "디폴트 템플릿 FEED",
   image_url:
     "http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
   link: {
@@ -13,7 +13,7 @@ const content = {
 
 const buttons = [
   {
-    title: "웹으로 보기",
+    title: "크롬 market url",
     link: {
       mobile_web_url: "https://developers.kakao.com",
       web_url: "https://developers.kakao.com",
@@ -26,45 +26,62 @@ const buttons = [
       web_url: "https://developers.kakao.com",
     },
   },
-]
+];
 
-const success = res => {
-  console.log("res:");
-  console.log(res);
-}
+const sendMSG = (receiver_uuids) => {
+  window.Kakao.API.request({
+    url: "/v1/api/talk/friends/message/default/send",
+    data: {
+      receiver_uuids,
+      template_object: {
+        object_type: "feed",
+        content,
+        social: {
+          like_count: 286,
+          comment_count: 45,
+          shared_count: 845,
+        },
+        buttons,
+      },
+    },
+    success: (response) => {
+      console.log(response);
+    },
+    fail: (error) => {
+      console.log(error);
+    },
+  });
+};
 
-const fail = err => {
+const success = (res) => {
+  const myFriend = res.elements[0];
+  const { uuid } = myFriend;
+
+  console.log("myFriend:");
+  console.log(myFriend);
+  console.log("uuid:");
+  console.log(uuid);
+
+  sendMSG([uuid]);
+};
+
+const fail = (err) => {
   console.log("err:");
   console.log(err);
-}
+};
 
-/*
- ** 자기 자신한테 메시지 보내기
- */
 class Message extends React.Component {
+  state = {
+    hasFriend: false,
+  };
+
   render() {
-    if (window.Kakao.isInitialized())
-      window.Kakao.API.request({
-        url: "/v2/api/talk/memo/default/send",
-        data: {
-          template_object: {
-            object_type: "feed",
-            content,
-            social: {
-              like_count: 286,
-              comment_count: 45,
-              shared_count: 845,
-            },
-            buttons,
-          },
-        },
-        success,
-        fail,
-      });
+    const { hasFriend } = this.state;
+    if (window.Kakao.isInitialized()) getFriends();
 
     return (
       <div>
-        <h1>MSG</h1>
+        <h1>MSG{hasFriend ? " sent" : " "}</h1>
       </div>
     );
   }
@@ -74,20 +91,13 @@ class Message extends React.Component {
  ** 친구 한테 보내기
  */
 
- class getFriends extends React.Component {
-  render() {
-    if (window.Kakao.isInitialized())
-      window.Kakao.API.request({
-        url: '/v1/api/talk/friends',
-        success,
-        fail
-      });
+const getFriends = () => {
+  if (window.Kakao.isInitialized())
+    window.Kakao.API.request({
+      url: "/v1/api/talk/friends",
+      success,
+      fail,
+    });
+};
 
-    return (
-      <div>
-        <h1>MSG</h1>
-      </div>
-    );
-  }
-}
 export default Message;
