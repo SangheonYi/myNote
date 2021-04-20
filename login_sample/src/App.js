@@ -1,14 +1,16 @@
 import React from "react";
-import {BrowserRouter,Route} from "react-router-dom"
+import {HashRouter,Route} from "react-router-dom"
 import Message from "./routes/Message";
 import Home from "./routes/Home";
 import Navigation from "./routes/Navigation";
+import ChromeScheme from "./routes/ChromeScheme";
 
 function App() {
-  return <BrowserRouter>
+  return <HashRouter>
   <Navigation/>
     <Route path="/" exact={true} component={Home}/>
-    <Route path="/Message" component={Message}/>
-    </BrowserRouter>;
+    <Route path="/message" component={Message}/>
+    <Route path="/chrome_scheme" component={ChromeScheme}/>
+    </HashRouter>;
 }
 export default App;

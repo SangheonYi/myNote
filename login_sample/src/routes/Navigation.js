@@ -6,6 +6,7 @@ function Navigation() {
   return (
     <div className="nav">
       <Link to="/">Home</Link>
+      <Link to="/chrome_scheme">chrome</Link>
     </div>
   );
 }

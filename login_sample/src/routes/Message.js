@@ -6,24 +6,24 @@ const content = {
   image_url:
     "http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
   link: {
-    mobile_web_url: "https://developers.kakao.com",
-    web_url: "https://developers.kakao.com",
+    mobile_web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
+    web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
   },
 };
 
 const buttons = [
   {
-    title: "크롬 market url",
+    title: "크롬으로 가라",
     link: {
-      mobile_web_url: "https://developers.kakao.com",
-      web_url: "https://developers.kakao.com",
+      mobile_web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
+      web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
     },
   },
   {
     title: "앱으로 보기",
     link: {
-      mobile_web_url: "https://developers.kakao.com",
-      web_url: "https://developers.kakao.com",
+      mobile_web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
+      web_url: "https://sangheonyi.github.io/myNote/#/chrome_scheme/",
     },
   },
 ];
