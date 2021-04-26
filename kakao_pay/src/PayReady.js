@@ -21,8 +21,10 @@ class PayReady extends React.Component {
     },
   };
 
-  componentDidMount() {
+  payReady = () => {
     const { params } = this.state;
+    console.log("ready");
+
     axios({
       url: "/v1/payment/ready",
       method: "POST",
@@ -33,22 +35,23 @@ class PayReady extends React.Component {
       params,
     }).then((response) => {
       const {
-        data: { next_redirect_app_url, next_redirect_pc_url, tid },
+        data: { next_redirect_mobile_url, next_redirect_pc_url, tid },
       } = response;
 	  window.localStorage.setItem("tid", tid);
-      if (IsMobile)
-        window.location.href = next_redirect_app_url;
+      if (IsMobile) {
+        console.log(next_redirect_mobile_url);
+        window.location.href = next_redirect_mobile_url;
+        }
       else
         window.location.href = next_redirect_pc_url;
     });
   }
 
   render() {
-    const { next_redirect_pc_url } = this.state;
+    console.log("render");
     return (
       <div>
-        <h2>Pay page</h2>
-        <a href={next_redirect_pc_url}>{next_redirect_pc_url}</a>
+        <h2 onClick={ this.payReady}>Pay page</h2>
       </div>
     );
   }

@@ -22,7 +22,7 @@ class PayResult extends React.Component {
     },
   };
 
-  componentDidMount() {
+  payApprove = () => {
     const { params } = this.state;
 
     axios({
@@ -41,7 +41,7 @@ class PayResult extends React.Component {
   render() {
     return (
       <div>
-        <h2>Result page</h2>
+        <h2 onClick={this.payApprove}>Result page</h2>
       </div>
     );
   }
